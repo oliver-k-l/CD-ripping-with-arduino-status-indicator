@@ -1,13 +1,14 @@
 import subprocess
 import os
 import datetime
+from pathlib import Path
 
 TIMEOUT_SECONDS = 30 * 60  # time the program waits before declaring a timeout
 DRIVE_LABELS = {
     "/dev/disk/by-id/usb-ASUS_DRW-24D5MT_235678C218CA-0:0": "asus",
     "/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0": "sandstrom",
 }
-LOG_DIR = "logs"
+LOG_DIR = Path(__file__).resolve().parent / "logs"
 
 def run_rip(device_path, extra_args=None, timeout=TIMEOUT_SECONDS):
     # build the base args list: whipper cd -d <device_path> rip -C complete -k
