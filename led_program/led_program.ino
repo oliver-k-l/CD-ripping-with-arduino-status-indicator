@@ -23,12 +23,16 @@ void setup() {
   pinMode(PIN_LED_GREEN, OUTPUT);
   // Serial.begin() at some baud rate
   Serial.begin(9600);
+  Serial.println("READY");
 }
 
 void loop() {
   // 1. if a byte is waiting on serial, read it and store in currentStatus
   if (Serial.available()) {
-    currentStatus = Serial.read();
+    char incoming = Serial.read();
+    if (incoming == busy || incoming == fail || incoming == idle || incoming == success){
+      currentStatus = incoming;
+    }
 }
 
   // 2. act on currentStatus:
