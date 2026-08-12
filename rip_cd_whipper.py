@@ -30,7 +30,7 @@ def run_rip(device_path, extra_args=None, timeout=TIMEOUT_SECONDS):
         os.remove(latest_link)
     except FileNotFoundError:
         pass
-    os.symlink(log_path, latest_link)
+    os.symlink(os.path.basename(log_path), latest_link)
 
 
     try:
