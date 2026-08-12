@@ -3,14 +3,14 @@ import os
 import datetime
 from pathlib import Path
 
-TIMEOUT_SECONDS = 30 * 60  # time the program waits before declaring a timeout
+WARN_AFTER_SECONDS = 60 * 60  # time the program waits before declaring a timeout
 DRIVE_LABELS = {
     "/dev/disk/by-id/usb-ASUS_DRW-24D5MT_235678C218CA-0:0": "asus",
     "/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0": "sandstrom",
 }
 LOG_DIR = Path(__file__).resolve().parent / "logs"
 
-def run_rip(device_path, extra_args=None, timeout=TIMEOUT_SECONDS):
+def run_rip(device_path, extra_args=None, warn_after=WARN_AFTER_SECONDS):
     # build the base args list: whipper cd -d <device_path> rip -C complete -k
     args = ["whipper", "cd", "-d", device_path, "rip", "-C", "complete", "-k"]
     # if extra_args is given, extend the list with it (e.g. ["--cdr"])
@@ -33,25 +33,26 @@ def run_rip(device_path, extra_args=None, timeout=TIMEOUT_SECONDS):
         pass
     os.symlink(os.path.basename(log_path), latest_link)
 
+    with open(log_path, "w") as log_file:
+        # Popen starts the child and returns immediately — does NOT block
+        rip_process = subprocess.Popen(
+            args, stdout=log_file, stderr=subprocess.STDOUT
+        )
 
-    try:
-        with open(log_path, "w") as log_file:
+        try:
+            # blocks until finished, OR until warn_after seconds pass
+            rip_process.wait(timeout=warn_after)
+        except subprocess.TimeoutExpired:
+            print(f"Attention: This disc has been ripping for {WARN_AFTER_SECONDS/60} minutes")
+            rip_process.wait()
 
-            rip_process = subprocess.run(
-                args=args, stdout=log_file,
-                stderr=subprocess.STDOUT,
-                timeout=timeout
-                )
-    except subprocess.TimeoutExpired: 
-        print("Disc has been ripping too long. Exiting with Timeout error")
+    # TODO: check rip_process.returncode, print + return True/False as before
+    if rip_process.returncode != 0:
+        print("Rip process failed")
         return False
     else:
-        if rip_process.returncode != 0:
-            print("rip_process failed")
-            return False
-        else:
-            print("rip_process succeeded")
-            return True
+        print("Rip process succeeded")
+        return True
 
 if __name__ == "__main__":
     run_rip(device_path="/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0")
