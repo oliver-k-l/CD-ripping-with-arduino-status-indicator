@@ -1,6 +1,6 @@
 {
-  "board": "arduino:avr:uno",
-  "port": "/dev/ttyACM0",
-  "sketch": "blink/blink.ino",
-  "output": "build"
+    "board": "arduino:avr:uno",
+    "port": "/dev/ttyACM0",
+    "sketch": "led_program/led_program.ino",
+    "output": "build"
 }

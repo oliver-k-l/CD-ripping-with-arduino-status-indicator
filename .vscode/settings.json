@@ -1,3 +1,4 @@
 {
-  "files.associations": { "*.ino": "cpp" }
+  "files.associations": { "*.ino": "cpp" },
+  "files.autoSave": "afterDelay"
 }
