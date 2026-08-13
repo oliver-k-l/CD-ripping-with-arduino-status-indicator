@@ -1,0 +1,11 @@
+# discrip-rip@.service
+[Unit]
+Description=Rip CD from drive %i
+
+[Service]
+WorkingDirectory=/home/oliver/projects/discrip
+Type=oneshot
+User=oliver
+Group=family
+UMask=0002
+ExecStart=/home/oliver/projects/discrip/.venv/bin/python rip_cd_whipper.py %i

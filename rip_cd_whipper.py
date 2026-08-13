@@ -11,6 +11,7 @@ DRIVE_LABELS = {
     "/dev/disk/by-id/usb-ASUS_DRW-24D5MT_235678C218CA-0:0": "asus",
     "/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0": "sandstrom",
 }
+DRIVES = {"asus": "/dev/disk/by-id/usb-ASUS_DRW-24D5MT_235678C218CA-0:0", "sandstrom": "/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0"}
 LOG_DIR = Path(__file__).resolve().parent / "logs"
 NEEDS_TAGGING_FILE = Path(__file__).resolve().parent / "needs_tagging.txt"
 
