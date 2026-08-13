@@ -3,6 +3,7 @@ import os
 import datetime
 from pathlib import Path
 import re
+from dataclasses import dataclass
 
 WARN_AFTER_SECONDS = 60 * 60  # time the program waits before declaring a timeout
 DRIVE_LABELS = {
@@ -11,6 +12,13 @@ DRIVE_LABELS = {
 }
 LOG_DIR = Path(__file__).resolve().parent / "logs"
 NEEDS_TAGGING_FILE = Path(__file__).resolve().parent / "needs_tagging.txt"
+
+@dataclass
+class RipResult:
+    success: bool
+    unmatched: bool
+    track_count_matched: bool
+    output_path: str
 
 
 def verify_rip(log_path):
