@@ -10,6 +10,8 @@ DRIVE_LABELS = {
     "/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0": "sandstrom",
 }
 LOG_DIR = Path(__file__).resolve().parent / "logs"
+NEEDS_TAGGING_FILE = Path(__file__).resolve().parent / "needs_tagging.txt"
+
 
 def verify_rip(log_path):
     with open(log_path) as f:
@@ -17,8 +19,17 @@ def verify_rip(log_path):
     track_match_obj = re.search(r", ([0-9]+) audio tracks", log_text)
     new_rip_match = re.search(r"creating output directory (.+)", log_text)
     duplicate_match = re.search(r"output directory (.+) is a finished rip", log_text)
+    unmatched_match = re.search(r"Submit this disc to MusicBrainz", log_text)
+    disc_id_match = re.search(r"MusicBrainz disc id (\S+)", log_text)
 
-    if track_match_obj is not None:
+    is_unmatched = bool(unmatched_match)
+
+    if disc_id_match:
+        disc_id = disc_id_match.group(1)
+    else:
+        raise ValueError("Whipper output unexpected. For details, see: " + log_path)
+
+    if track_match_obj:
         track_match_int = int(track_match_obj.group(1))
     else:
         raise ValueError("Whipper output shows no number of tracks. For details, see: " + log_path)
@@ -36,10 +47,14 @@ def verify_rip(log_path):
 
     if actual_track_count == track_match_int:
         print("Verified: Number of FLAC files as expected")
-        return (True, output_dir)
+        counts_match = True
     else:
         print("Problem: Number of FLAC files not as expected")
-        return (False, output_dir)
+        counts_match = False
+
+    return (counts_match, output_dir, is_unmatched, disc_id)
+
+    
 
 
 def run_rip(device_path, extra_args=None, warn_after=WARN_AFTER_SECONDS):
@@ -78,13 +93,17 @@ def run_rip(device_path, extra_args=None, warn_after=WARN_AFTER_SECONDS):
             print(f"Attention: This disc has been ripping for {WARN_AFTER_SECONDS/60} minutes")
             rip_process.wait()
 
-    # TODO: check rip_process.returncode, print + return True/False as before
     if rip_process.returncode != 0:
         print("Rip process failed")
         return False
     else:
         print("Rip process succeeded")
         return True
+
+def record_needs_tagging(disc_id, output_dir):
+    timestamp = datetime.datetime.now().isoformat()
+    with open(NEEDS_TAGGING_FILE, "a") as f:
+        f.write(f"{timestamp}\t{disc_id}\t{output_dir}\n") 
 
 if __name__ == "__main__":
     run_rip(device_path="/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0")
