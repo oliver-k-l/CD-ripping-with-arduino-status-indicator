@@ -133,7 +133,7 @@ def rip_disc(device_path, extra_args=None):
         print(f"Something went wrong while ripping the disc: {e}")
 
     finally:
-        if result is not None:
+        if result is not None and result.success:
             send_status("S")
         else:
             send_status("F")
