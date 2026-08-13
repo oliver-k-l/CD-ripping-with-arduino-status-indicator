@@ -1,0 +1,50 @@
+INFO:whipper.command.cd:using configured read offset 6
+INFO:whipper.command.cd:checking device /dev/sr1
+Reading TOC   0 %Reading TOC   4 %Reading TOC   8 %Reading TOC  13 %Reading TOC  17 %Reading TOC  21 %Reading TOC  26 %Reading TOC  30 %Reading TOC  34 %Reading TOC  39 %Reading TOC  43 %Reading TOC  47 %Reading TOC  52 %Reading TOC  56 %Reading TOC  60 %Reading TOC  65 %Reading TOC  69 %Reading TOC  73 %Reading TOC  78 %Reading TOC  82 %Reading TOC  86 %Reading TOC  91 %Reading TOC  95 %Reading TOC 100 %                 Reading TOC 100 %                 CDDB disc id: 61121a17
+MusicBrainz disc id h76BF_yfLG82Itdk92TdcmLaj0w-
+MusicBrainz lookup URL https://musicbrainz.org/cdtoc/attach?toc=1+23+347711+150+14942+27192+41707+56901+73098+82998+113555+125437+135158+152543+169992+192086+206937+221523+239916+250468+265245+281335+294728+306933+316183+333352&tracks=23&id=h76BF_yfLG82Itdk92TdcmLaj0w-
+Disc duration: 01:17:14.146, 23 audio tracks
+
+Matching releases:
+
+Artist  : The Smiths
+Title   : The Sound of The Smiths
+Duration: 01:16:57.407
+URL     : https://musicbrainz.org/release/feaa54b6-7873-42ac-bb09-95a58a1d0dd9
+Release : feaa54b6-7873-42ac-bb09-95a58a1d0dd9
+Type    : Compilation
+Barcode : 825646937097
+Country : United Kingdom
+Cat no  : 2564-69370-9
+
+Artist  : The Smiths
+Title   : The Sound of The Smiths (Disc 1 of 2)
+Duration: 01:16:57.407
+URL     : https://musicbrainz.org/release/1f4d2ace-7766-3480-8301-14c4f4b3ba18
+Release : 1f4d2ace-7766-3480-8301-14c4f4b3ba18
+Type    : Compilation
+Barcode : 081227988890
+Country : United States
+Cat no  : R2 516016
+
+Artist  : The Smiths
+Title   : The Sound of The Smiths (Disc 1 of 2)
+Duration: 01:16:57.407
+URL     : https://musicbrainz.org/release/e8d7f540-9eb1-30c3-ba07-a4c0b5a5ec24
+Release : e8d7f540-9eb1-30c3-ba07-a4c0b5a5ec24
+Type    : Compilation
+Barcode : 825646937172
+Country : Germany
+Cat no  : 2564-69371-7
+
+Artist  : The Smiths
+Title   : The Sound of The Smiths
+Duration: 01:16:57.407
+URL     : https://musicbrainz.org/release/1e79f4e2-b53d-4744-bd08-fd3de8195f78
+Release : 1e79f4e2-b53d-4744-bd08-fd3de8195f78
+Type    : Compilation
+Barcode : 081227988906
+Country : United States
+Cat no  : R2 516015
+
+Reading table   0 %Reading table   4 %
