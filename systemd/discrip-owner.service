@@ -1,0 +1,15 @@
+# discrip-owner.service
+[Unit]
+Description=Discrip CD-ripping status relay (Arduino LED owner process)
+
+[Service]
+Type=simple
+RuntimeDirectory=discrip
+WorkingDirectory=/home/oliver/projects/discrip/
+User=oliver
+Group=family
+UMask=002
+ExecStart=/home/oliver/projects/discrip/.venv/bin/python rip_cd_owner_process.py
+
+[Install]
+WantedBy=multi-user.target

@@ -2,7 +2,7 @@ import socket
 import os
 import serial
 
-SOCKET_PATH = "/tmp/discrip.sock"
+SOCKET_PATH = "/run/discrip.sock"
 SERIAL_PORT = "/dev/ttyACM0"
 BAUD = 9600
 

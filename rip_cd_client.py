@@ -1,7 +1,7 @@
 import socket
 import sys
 
-SOCKET_PATH = "/tmp/discrip.sock"
+SOCKET_PATH = "/run/discrip.sock"
 
 def send_status(status):
     try:
