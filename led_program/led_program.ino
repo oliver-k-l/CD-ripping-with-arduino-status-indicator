@@ -1,7 +1,7 @@
 // --- Pin assignments (fill in the digital pins you've wired) ---
 const int PIN_LED_YELLOW = 8;
-const int PIN_LED_RED    = 9;
-const int PIN_LED_GREEN  = 10;
+const int triads[i].pinRed    = 9;
+const int triads[i].pinGreen  = 10;
 
 // --- Status codes ---
 // 'B' = busy, 'F' = fail, 'S' = success, 'I' = idle
@@ -15,16 +15,6 @@ char currentStatus = 'I';
 unsigned long lastToggleTime = 0;
 unsigned long timeNow = 0;
 const unsigned long BLINK_INTERVAL_MS = 300;
-
-void setup() {
-  // pinMode() each LED pin as OUTPUT
-  pinMode(PIN_LED_YELLOW, OUTPUT);
-  pinMode(PIN_LED_RED, OUTPUT);
-  pinMode(PIN_LED_GREEN, OUTPUT);
-  // Serial.begin() at some baud rate
-  Serial.begin(9600);
-  Serial.println("READY");
-}
 
 struct Triad {
   int pinYellow;
@@ -41,14 +31,35 @@ Triad triads[2] = {
   {7, 6, 5, 'i', 0}
 };
 
+void setup() {
+  for (int i = 0; i < 2; i++) {
+    pinMode(triads[i].pinYellow, OUTPUT);
+    pinMode(triads[i].pinRed, OUTPUT);
+    pinMode(triads[i].pinGreen, OUTPUT);
+  }
+  Serial.begin(9600);
+  Serial.println("READY");
+}
+
 void loop() {
   // 1. if a byte is waiting on serial, read it and store in currentStatus
-  if (Serial.available()) {
-    char incoming = Serial.read();
-    if (incoming == busy || incoming == fail || incoming == idle || incoming == success){
-      currentStatus = incoming;
+if (Serial.available()) {
+  char incoming = Serial.read();
+  char normalized = toupper(incoming);
+  int index;
+  if (normalized == busy || normalized == fail || normalized == idle || normalized == success) {
+    // TODO: which triad? isupper(incoming) → asus (index 0), else sandstrom (index 1)
+    if(isupper(incoming)) { //asus
+      index = 0;
     }
-}
+    else{
+      index = 1;
+    }
+    // TODO: store incoming (not normalized) into that triad's currentStatus
+    triads[index].currentStatus = incoming;
+    }
+  }
+
 
   // 2. act on currentStatus:
   //    - 'B': non-blocking blink — check millis() - lastToggleTime,
@@ -56,32 +67,35 @@ void loop() {
   //    - 'F': red on solid, others off
   //    - 'S': green on solid, others off
   //    - 'I': all off
-  if (currentStatus == idle) {
-    digitalWrite(PIN_LED_YELLOW, LOW);
-    digitalWrite(PIN_LED_GREEN, LOW);
-    digitalWrite(PIN_LED_RED, LOW);
+for (int i = 0; i < 2; i++) {
+
+  if (toupper(triads[i].currentStatus) == idle) {
+    digitalWrite(triads[i].pinYellow, LOW);
+    digitalWrite(triads[i].pinGreen, LOW);
+    digitalWrite(triads[i].pinRed, LOW);
   }
 
-  if (currentStatus == fail) {
-    digitalWrite(PIN_LED_YELLOW, LOW);
-    digitalWrite(PIN_LED_GREEN, LOW);
-    digitalWrite(PIN_LED_RED, HIGH);
+  if (toupper(triads[i].currentStatus) == fail) {
+    digitalWrite(triads[i].pinYellow, LOW);
+    digitalWrite(triads[i].pinGreen, LOW);
+    digitalWrite(triads[i].pinRed, HIGH);
   }
 
-  if (currentStatus == success) {
-    digitalWrite(PIN_LED_YELLOW, LOW);
-    digitalWrite(PIN_LED_GREEN, HIGH);
-    digitalWrite(PIN_LED_RED, LOW);
+  if (toupper(triads[i].currentStatus) == success) {
+    digitalWrite(triads[i].pinYellow, LOW);
+    digitalWrite(triads[i].pinGreen, HIGH);
+    digitalWrite(triads[i].pinRed, LOW);
   }
 
-  if (currentStatus == busy) {
-    digitalWrite(PIN_LED_GREEN, LOW);
-    digitalWrite(PIN_LED_RED, LOW);
+  if (toupper(triads[i].currentStatus) == busy) {
+    digitalWrite(triads[i].pinGreen, LOW);
+    digitalWrite(triads[i].pinRed, LOW);
     timeNow = millis();
 
-    if (timeNow - lastToggleTime >= BLINK_INTERVAL_MS) {
-      digitalWrite(PIN_LED_YELLOW, !digitalRead(PIN_LED_YELLOW));
-      lastToggleTime = timeNow;
+    if (timeNow - triads[i].lastToggleTime >= BLINK_INTERVAL_MS) {
+      digitalWrite(triads[i].pinYellow, !digitalRead(triads[i].pinYellow));
+      triads[i].lastToggleTime = timeNow;
+      }
     }
   }
 }
