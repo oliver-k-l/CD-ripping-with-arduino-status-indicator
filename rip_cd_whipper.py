@@ -39,6 +39,8 @@ def verify_rip(log_path):
     duplicate_match = re.search(r"output directory (.+) is a finished rip", log_text)
     unmatched_match = re.search(r"Submit this disc to MusicBrainz", log_text)
     disc_id_match = re.search(r"MusicBrainz disc id (\S+)", log_text)
+    htoa_match = re.search(r"found Hidden Track \w+ Audio", log_text)
+    htoa_discarded = re.search(r"HTOA discarded, contains digital silence", log_text)
 
     is_unmatched = bool(unmatched_match)
 
@@ -63,7 +65,14 @@ def verify_rip(log_path):
     flac_files = list(Path(output_dir).glob("*.flac"))
     actual_track_count = len(flac_files)
 
-    if actual_track_count == track_match_int:
+    # HTOA is ripped-then-checked; only counts as an extra file if whipper decides it's not silence
+    
+    if htoa_match and not htoa_discarded:
+        expected_track_count = track_match_int + 1 # bump by 1 if htoa_match and not discarded
+    else:
+        expected_track_count = track_match_int
+
+    if actual_track_count == expected_track_count:
         print("Verified: Number of FLAC files as expected")
         counts_match = True
     else:
