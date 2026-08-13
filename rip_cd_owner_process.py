@@ -3,7 +3,7 @@ import os
 import serial
 
 SOCKET_PATH = "/run/discrip/discrip.sock"
-SERIAL_PORT = "/dev/ttyACM0"
+SERIAL_PORT = "/dev/discrip-arduino"
 BAUD = 9600
 
 def main():
