@@ -141,4 +141,5 @@ def rip_disc(device_path, extra_args=None):
     return result
 
 if __name__ == "__main__":
-    run_rip(device_path="/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0")
+    result = rip_disc(device_path="/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0")
+    print(f"RipResult is: {result}")
