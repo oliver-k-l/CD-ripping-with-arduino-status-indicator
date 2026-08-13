@@ -117,7 +117,7 @@ def record_needs_tagging(disc_id, output_dir):
         f.write(f"{timestamp}\t{disc_id}\t{output_dir}\n") 
 
 def rip_disc(device_path, extra_args=None):
-    send_status("B")
+    send_status(cased_status(status="B", device_path=device_path))
     result = None  # pessimistic default — overwritten only on success
 
     try:
@@ -136,11 +136,22 @@ def rip_disc(device_path, extra_args=None):
 
     finally:
         if result is not None and result.success:
-            send_status("S")
+            send_status(cased_status(status="S", device_path=device_path))
         else:
-            send_status("F")
+            send_status(cased_status(status="F", device_path=device_path))
 
     return result
+
+
+def cased_status(status, device_path):
+    device = DRIVE_LABELS.get(device_path, "unknown")
+    if device == "asus":
+        cased_status = status.upper()
+    elif device == "sandstrom":
+        cased_status = status.lower()
+    else:
+        raise ValueError(f"Invalid device path reached signal casing decision: {device_path}")
+    return cased_status
 
 if __name__ == "__main__":
     arg = sys.argv[1]
