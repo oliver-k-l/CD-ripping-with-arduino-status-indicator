@@ -23,6 +23,13 @@ class RipResult:
     track_count_matched: bool
     output_path: str
 
+@dataclass
+class VerifyResult:
+    counts_match: bool
+    output_dir: str
+    is_unmatched: bool
+    disc_id: str
+    is_duplicate: bool
 
 def verify_rip(log_path):
     with open(log_path) as f:
@@ -63,7 +70,15 @@ def verify_rip(log_path):
         print("Problem: Number of FLAC files not as expected")
         counts_match = False
 
-    return (counts_match, output_dir, is_unmatched, disc_id)
+    is_duplicate = bool(duplicate_match)
+
+    return VerifyResult(
+        counts_match=counts_match,
+        output_dir=output_dir,
+        is_unmatched=is_unmatched,
+        disc_id=disc_id,
+        is_duplicate=is_duplicate,
+    )
 
     
 
@@ -122,15 +137,19 @@ def rip_disc(device_path, extra_args=None):
 
     try:
         success, log_path = run_rip(device_path=device_path, extra_args=extra_args)
-        counts_match, output_dir, is_unmatched, disc_id = verify_rip(log_path)
+        verify_result = verify_rip(log_path)
 
-        if is_unmatched:
-            record_needs_tagging(disc_id, output_dir)
-            print(f"The disc could not be matched to an entry in the MusicBrainz catalogue. See {output_dir} for details.")
+        if verify_result.is_unmatched:
+            record_needs_tagging(verify_result.disc_id, verify_result.output_dir)
+            print(f"The disc could not be matched to an entry in the MusicBrainz catalogue. See {verify_result.output_dir} for details.")
 
-        overall_success = bool(success and counts_match) 
-        result = RipResult(success=overall_success, unmatched=is_unmatched, 
-                           track_count_matched=counts_match, output_path=output_dir)  
+        if verify_result.is_duplicate:
+            overall_success = verify_result.counts_match
+        else:
+            overall_success = bool(success and verify_result.counts_match)
+
+        result = RipResult(success=overall_success, unmatched=verify_result.is_unmatched,
+                           track_count_matched=verify_result.counts_match, output_path=verify_result.output_dir)
     except ValueError as e:
         print(f"Something went wrong while ripping the disc: {e}")
 
