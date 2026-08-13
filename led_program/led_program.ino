@@ -41,14 +41,12 @@ if (Serial.available()) {
   char normalized = toupper(incoming);
   int index;
   if (normalized == busy || normalized == fail || normalized == idle || normalized == success) {
-    // TODO: which triad? isupper(incoming) → asus (index 0), else sandstrom (index 1)
     if(isupper(incoming)) { //asus
       index = 0;
     }
     else{
       index = 1;
     }
-    // TODO: store incoming (not normalized) into that triad's currentStatus
     triads[index].currentStatus = incoming;
     }
   }
