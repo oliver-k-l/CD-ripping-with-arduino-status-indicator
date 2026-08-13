@@ -14,7 +14,7 @@ char idle = 'I';
 char currentStatus = 'I';
 unsigned long lastToggleTime = 0;
 unsigned long timeNow = 0;
-const unsigned long BLINK_INTERVAL_MS = 500;
+const unsigned long BLINK_INTERVAL_MS = 300;
 
 void setup() {
   // pinMode() each LED pin as OUTPUT
@@ -25,6 +25,21 @@ void setup() {
   Serial.begin(9600);
   Serial.println("READY");
 }
+
+struct Triad {
+  int pinYellow;
+  int pinRed;
+  int pinGreen;
+  char currentStatus;
+  unsigned long lastToggleTime;
+};
+
+Triad triads[2] = {
+  // asus  — pins 10/9/8, initial status 'I', lastToggleTime 0
+  {10, 9, 8, 'I', 0,},
+  // sandstrom — pins 7/6/5, initial status 'i', lastToggleTime 0
+  {7, 6, 5, 'i', 0}
+};
 
 void loop() {
   // 1. if a byte is waiting on serial, read it and store in currentStatus
