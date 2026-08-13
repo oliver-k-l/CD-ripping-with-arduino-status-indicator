@@ -4,6 +4,7 @@ import datetime
 from pathlib import Path
 import re
 from dataclasses import dataclass
+from rip_cd_client import send_status
 
 WARN_AFTER_SECONDS = 60 * 60  # time the program waits before declaring a timeout
 DRIVE_LABELS = {
@@ -103,15 +104,41 @@ def run_rip(device_path, extra_args=None, warn_after=WARN_AFTER_SECONDS):
 
     if rip_process.returncode != 0:
         print("Rip process failed")
-        return False
+        return (False, log_path)
     else:
         print("Rip process succeeded")
-        return True
+        return (True, log_path)
 
 def record_needs_tagging(disc_id, output_dir):
     timestamp = datetime.datetime.now().isoformat()
     with open(NEEDS_TAGGING_FILE, "a") as f:
         f.write(f"{timestamp}\t{disc_id}\t{output_dir}\n") 
+
+def rip_disc(device_path, extra_args=None):
+    send_status("B")
+    result = None  # pessimistic default — overwritten only on success
+
+    try:
+        success, log_path = run_rip(device_path=device_path, extra_args=extra_args)
+        counts_match, output_dir, is_unmatched, disc_id = verify_rip(log_path)
+
+        if is_unmatched:
+            record_needs_tagging(disc_id, output_dir)
+            print(f"The disc could not be matched to an entry in the MusicBrainz catalogue. See {output_dir} for details.")
+
+        overall_success = bool(success and counts_match) 
+        result = RipResult(success=overall_success, unmatched=is_unmatched, 
+                           track_count_matched=counts_match, output_path=output_dir)  
+    except ValueError as e:
+        print(f"Something went wrong while ripping the disc: {e}")
+
+    finally:
+        if result is not None:
+            send_status("S")
+        else:
+            send_status("F")
+
+    return result
 
 if __name__ == "__main__":
     run_rip(device_path="/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0")
