@@ -4,6 +4,7 @@ import datetime
 from pathlib import Path
 import re
 from dataclasses import dataclass
+import sys
 from rip_cd_client import send_status
 
 WARN_AFTER_SECONDS = 60 * 60  # time the program waits before declaring a timeout
@@ -11,7 +12,7 @@ DRIVE_LABELS = {
     "/dev/disk/by-id/usb-ASUS_DRW-24D5MT_235678C218CA-0:0": "asus",
     "/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0": "sandstrom",
 }
-DRIVES = {"asus": "/dev/disk/by-id/usb-ASUS_DRW-24D5MT_235678C218CA-0:0", "sandstrom": "/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0"}
+LABEL_TO_PATH = {label: path for path, label in DRIVE_LABELS.items()}
 LOG_DIR = Path(__file__).resolve().parent / "logs"
 NEEDS_TAGGING_FILE = Path(__file__).resolve().parent / "needs_tagging.txt"
 
@@ -142,5 +143,10 @@ def rip_disc(device_path, extra_args=None):
     return result
 
 if __name__ == "__main__":
-    result = rip_disc(device_path="/dev/disk/by-id/usb-HL-DT-ST_DVDRAM_GP75N_K0ON7D64619-0:0")
+    arg = sys.argv[1]
+    if arg in LABEL_TO_PATH:
+        input_path = LABEL_TO_PATH.get(arg)
+    else:
+        raise ValueError(f"Invalid argument passed to rip_cd_whipper.py: {arg}")
+    result = rip_disc(device_path=input_path)
     print(f"RipResult is: {result}")
