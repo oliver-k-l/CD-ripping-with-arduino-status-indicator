@@ -1,0 +1,2 @@
+SUBSYSTEM=="block", ACTION=="change", ENV{ID_CDROM_MEDIA_TRACK_COUNT_AUDIO}=="?*", ENV{ID_SERIAL_SHORT}=="K0ON7D64619", TAG+="systemd", ENV{SYSTEMD_WANTS}="discrip-rip@sandstrom.service"
+SUBSYSTEM=="block", ACTION=="change", ENV{ID_CDROM_MEDIA_TRACK_COUNT_AUDIO}=="?*", ENV{ID_SERIAL_SHORT}=="235678C218CA", TAG+="systemd", ENV{SYSTEMD_WANTS}="discrip-rip@asus.service"
