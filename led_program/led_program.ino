@@ -1,8 +1,3 @@
-// --- Pin assignments (fill in the digital pins you've wired) ---
-const int PIN_LED_YELLOW = 8;
-const int triads[i].pinRed    = 9;
-const int triads[i].pinGreen  = 10;
-
 // --- Status codes ---
 // 'B' = busy, 'F' = fail, 'S' = success, 'I' = idle
 char busy = 'B';
@@ -11,8 +6,6 @@ char success = 'S';
 char idle = 'I';
 
 // --- State that must survive between loop() calls ---
-char currentStatus = 'I';
-unsigned long lastToggleTime = 0;
 unsigned long timeNow = 0;
 const unsigned long BLINK_INTERVAL_MS = 300;
 
