@@ -41,6 +41,7 @@ def verify_rip(log_path):
     disc_id_match = re.search(r"MusicBrainz disc id (\S+)", log_text)
     htoa_match = re.search(r"found Hidden Track \w+ Audio", log_text)
     htoa_discarded = re.search(r"HTOA discarded, contains digital silence", log_text)
+    cue_match = re.search(r"parsing \.cue file '(.+\.cue)'", log_text)
 
     is_unmatched = bool(unmatched_match)
 
@@ -59,9 +60,14 @@ def verify_rip(log_path):
     elif duplicate_match:
         print(log_path + " is a finished rip")
         output_dir = duplicate_match.group(1)
+    elif cue_match:
+        print(log_path + " has no creating/duplicate marker "
+              "(retry into a directory left behind by an earlier crash) "
+              "- recovered output dir from the .cue file instead")
+        output_dir = os.path.dirname(cue_match.group(1))
     else:
         raise ValueError("Whipper output is unexpected. Neither new nor duplicate rip. See: " + log_path)
-
+    
     flac_files = list(Path(output_dir).glob("*.flac"))
     actual_track_count = len(flac_files)
 
