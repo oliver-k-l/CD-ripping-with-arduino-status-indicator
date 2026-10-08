@@ -67,12 +67,12 @@ def verify_rip(log_path):
         output_dir = os.path.dirname(cue_match.group(1))
     else:
         raise ValueError("Whipper output is unexpected. Neither new nor duplicate rip. See: " + log_path)
-    
+
     flac_files = list(Path(output_dir).glob("*.flac"))
     actual_track_count = len(flac_files)
 
     # HTOA is ripped-then-checked; only counts as an extra file if whipper decides it's not silence
-    
+
     if htoa_match and not htoa_discarded:
         expected_track_count = track_match_int + 1 # bump by 1 if htoa_match and not discarded
     else:
@@ -95,7 +95,7 @@ def verify_rip(log_path):
         is_duplicate=is_duplicate,
     )
 
-    
+
 
 
 def run_rip(device_path, extra_args=None, warn_after=WARN_AFTER_SECONDS):
@@ -144,7 +144,7 @@ def run_rip(device_path, extra_args=None, warn_after=WARN_AFTER_SECONDS):
 def record_needs_tagging(disc_id, output_dir):
     timestamp = datetime.datetime.now().isoformat()
     with open(NEEDS_TAGGING_FILE, "a") as f:
-        f.write(f"{timestamp}\t{disc_id}\t{output_dir}\n") 
+        f.write(f"{timestamp}\t{disc_id}\t{output_dir}\n")
 
 def rip_disc(device_path, extra_args=None):
     send_status(cased_status(status="B", device_path=device_path))
